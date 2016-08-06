@@ -1,0 +1,3 @@
+[submodule "prometheus"]
+	path = prometheus
+	url = https://github.com/tarantool/prometheus
