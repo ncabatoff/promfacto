@@ -1,3 +1,6 @@
 [submodule "prometheus"]
 	path = prometheus
 	url = https://github.com/tarantool/prometheus
+[submodule "YARM"]
+	path = YARM
+	url = https://github.com/narc0tiq/YARM
