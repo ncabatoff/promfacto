@@ -19,6 +19,22 @@ See the Metrics section below for the full list.  You'll be able to see what's b
 built in your factory in terms of furnaces, assembling machines, accumulators, and
 fluid levels.  You can see world metrics like pollution and deaths.
 
+Using a modified version of [YARM](https://github.com/narc0tiq/YARM) you can
+get metrics on resource consumption and remaining resources.  In other words,
+the data you could see on your in-game resource monitor is also published for
+Prometheus.  This requires that you complete the research to get the in-game
+equivalent, aka 'resource-monitoring'.
+
+## How?
+
+Prometheus periodically does an HTTP GET to all configured metrics exporters, and
+stores the metrics they publish in an internal DB.  Grafana queries that DB to visualize
+the data.
+
+node-exporter is primarily a tool for collecting OS metrics, but it also has an option
+to let it read metrics from files in a directory.  These factorio mods write files in
+that directory.
+
 ## Requirements
 
 Only tested on Factorio 0.12.35 single-player.  Only tested on Ubuntu 14.04 and 16.04,
@@ -27,9 +43,12 @@ should work on any Linux system but if you can't run Docker it'll be more involv
 
 ## Installation
 
+If you already have the real version of YARM installed, remove it.
+
 Download the 
-[zip file](https://github.com/ncabatoff/promfacto/files/405249/promfacto_0.1.1.zip)
-and place it the mods/ directory within your Factorio install.
+[promfacto zip file](https://github.com/ncabatoff/promfacto/files/405249/promfacto_0.1.1.zip)
+and our hacked [YARM zip file](https://github.com/ncabatoff/promfacto/files/405249/YARM_0.7.17.zip)
+and place them in the mods/ directory within your Factorio install.
 
 You'll need Prometheus, node-exporter and Grafana as well to make proper use of
 the metrics emitted.  You can build them from source, or use Docker.  If you're not
@@ -217,6 +236,22 @@ gauge: how many furnaces are doing what
 * product: what the furnace is smelting (based on its output inventory, 'unknown' if none)
 * status: 'idle', 'crafting no outputs', 'crafting with outputs'
 
+### [YARM] factorio\_resource\_mined\_total
+
+counter: how many of each resource have been mined
+
+* force: 'player' in single-player games
+* resource_name: 'coal', 'stone', etc
+* site_name: "same as in the in-game resource monitor, e.g. S76"
+
+### [YARM] factorio\_resource\_remaining
+
+gauge: how much is left of each resource
+
+* force: 'player' in single-player games
+* resource_name: 'coal', 'stone', etc
+* site_name: "same as in the in-game resource monitor, e.g. S76"
+
 ## Ethics
 
 Some may view use of these metrics as cheating, insofar as they allow access to information
@@ -225,4 +260,8 @@ on your own production and facilities probably isn't so bad, but information on 
 is going to be more contentious.  It's easy to add and delete panels in Grafana, use only those
 you're comfortable with.
 
+## Thanks
 
+Thanks to Tarantool for their [Lua Prometheus client library](https://github.com/tarantool/prometheus).
+
+Thanks to Octav "Narc" Sandulescu for [YARM](https://github.com/narc0tiq/YARM).
