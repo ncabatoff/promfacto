@@ -25,6 +25,13 @@ the data you could see on your in-game resource monitor is also published for
 Prometheus.  This requires that you complete the research to get the in-game
 equivalent, aka 'resource-monitoring'.
 
+Using a modified version of
+[Advanced Logistic System](https://github.com/anoutsider/advanced-logistics-system) 
+you can get metrics on container contents.  As with YARM, this merely exposes to
+Prometheus what was already visible in the in-game GUI, so you have to unlock
+the tech and build the controller before metrics will be written.
+
+
 ## How?
 
 Prometheus periodically does an HTTP GET to all configured metrics exporters, and
@@ -43,10 +50,11 @@ should work on any Linux system but if you can't run Docker it'll be more involv
 
 ## Installation
 
-If you already have the real version of YARM installed, remove it.
+If you already have the real versions of YARM or Advanced Logistic System
+installed, remove them.
 
-Download the promfacto and YARM zip files from 
-[the release page](https://github.com/ncabatoff/promfacto/releases/tag/0.1.2)
+Download the promfacto, YARM and Advanced Logistic System zip files from 
+[the release page](https://github.com/ncabatoff/promfacto/releases/tag/0.1.3)
 and place them in the mods/ directory within your Factorio install.
 
 You'll need Prometheus, node-exporter and Grafana as well to make proper use of
@@ -250,6 +258,14 @@ gauge: how much is left of each resource
 * force: 'player' in single-player games
 * resource_name: 'coal', 'stone', etc
 * site_name: "same as in the in-game resource monitor, e.g. S76"
+
+### [ALS] factorio\_objects\_owned
+
+gauge: how much items are in containers
+
+* force: 'player' in single-player games
+* item
+* container
 
 ## Ethics
 
