@@ -155,7 +155,7 @@ function updatePlayer(player)
     local forceName = force.name
     local index = player.index
 
-    print("updatePlayer " .. forceName)
+    -- print("updatePlayer " .. forceName)
 
     if player.controller_type == defines.controllers.character then
         local invs = {defines.inventory.player_main, defines.inventory.player_quickbar, defines.inventory.player_guns,
@@ -177,7 +177,7 @@ function updatePlayer(player)
     reportBatteries(forceName)
     reportBuilders(forceName)
 
-    print "updatePlayer done"
+    -- print "updatePlayer done"
 end
 
 function reportFluids(forceName)
@@ -347,21 +347,21 @@ function forEachChunk(f)
 end
 
 function getEntities(force, types)
-    print("getEntities " .. serpent.line(types))
+    -- print("getEntities " .. serpent.line(types))
 
     local surface = game.get_surface(1)
     local ents = {}
     forEachChunk(function(chunk_coord, area)
         for _,type in pairs(types) do
-            print("scanning for type " .. type .. " at " .. serpent.line(area))
+            -- print("scanning for type " .. type .. " at " .. serpent.line(area))
             for _,ent in pairs(surface.find_entities_filtered{area=area, type=type, force=force.name}) do
                 local xy = XY(ent.position.x, ent.position.y)
-                print("found ent at " .. xy:tostr())
+                -- print("found ent at " .. xy:tostr())
                 ents[xy:tostr()] = ent
             end
         end
     end)
-    print("getEntities " .. serpent.line(types) .. " done")
+    -- print("getEntities " .. serpent.line(types) .. " done")
     return ents
 end
 
@@ -375,7 +375,7 @@ function getStoredFluids(storageTanksByPos)
                 ent = surface.find_entity("storage-tank", str2pos(xys))
             end
             if ent then
-                print("checking fluid at " .. xys)
+                -- print("checking fluid at " .. xys)
                 local fb = ent.fluidbox[1]
                 if fb then
                     count_by_name_total[fb.type] = fb.amount + (count_by_name_total[fb.type] or 0)
@@ -410,9 +410,9 @@ function entityMined(event, ent)
     if ent.type == "storage-tank" then
         local xy = XY(ent.position.x, ent.position.y)
         if global.fluidEntities[xy:tostr()] == nil then
-            print("mined tank we didn't know about? pos=" .. xy:tostr())
+            -- print("mined tank we didn't know about? pos=" .. xy:tostr())
         else
-            print("mined tank pos=" .. xy:tostr())
+            -- print("mined tank pos=" .. xy:tostr())
         end
 
         global.fluidEntities[xy:tostr()] = nil
