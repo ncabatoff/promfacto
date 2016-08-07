@@ -4,3 +4,6 @@
 [submodule "YARM"]
 	path = YARM
 	url = https://github.com/narc0tiq/YARM
+[submodule "advanced-logistics-system"]
+	path = advanced-logistics-system
+	url = https://github.com/anoutsider/advanced-logistics-system
