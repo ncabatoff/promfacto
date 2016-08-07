@@ -280,3 +280,5 @@ you're comfortable with.
 Thanks to Tarantool for their [Lua Prometheus client library](https://github.com/tarantool/prometheus).
 
 Thanks to Octav "Narc" Sandulescu for [YARM](https://github.com/narc0tiq/YARM).
+
+Thanks to Amr Abed for [Advanced Logicistic System](https://github.com/anoutsider/advanced-logistics-system).
