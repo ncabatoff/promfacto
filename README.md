@@ -45,9 +45,8 @@ should work on any Linux system but if you can't run Docker it'll be more involv
 
 If you already have the real version of YARM installed, remove it.
 
-Download the 
-[promfacto zip file](https://github.com/ncabatoff/promfacto/files/405249/promfacto_0.1.1.zip)
-and our hacked [YARM zip file](https://github.com/ncabatoff/promfacto/files/405249/YARM_0.7.17.zip)
+Download the promfacto and YARM zip files from 
+[the release page](https://github.com/ncabatoff/promfacto/releases/tag/0.1.2)
 and place them in the mods/ directory within your Factorio install.
 
 You'll need Prometheus, node-exporter and Grafana as well to make proper use of
