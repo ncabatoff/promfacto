@@ -1,9 +1,10 @@
 {
     "name": "promfacto",
-    "version": "0.1.4",
+    "version": "0.2.0",
     "title": "Promfacto",
     "author": "ncabatoff",
     "description": "Publish metrics to a Prometheus.io server",
     "homepage": "https://github.com/ncabatoff/promfacto",
-    "dependencies": ["base >= 0.12.25"]
+    "dependencies": ["base >= 0.14.22"],
+    "factorio_version": "0.14"
 }

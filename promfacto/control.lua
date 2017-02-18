@@ -4,7 +4,7 @@
 --  - sample input inventory: when nonzero, indicates a potentially blocked machine
 --  - try counting enemies via surface rather than game.force
 
-require "defines"
+-- require "defines"
 
 prometheus = require("prometheus/tarantool-prometheus")
 count_deaths = prometheus.counter("factorio_deaths", "entity died", {"entity_name"})
@@ -117,7 +117,7 @@ end)
 
 --- init all players
 function initPlayers()
-    for _,player in ipairs(game.players) do
+    for _,player in pairs(game.players) do
         initPlayer(player)
     end
 end
@@ -145,7 +145,7 @@ function initPlayer(player)
 end
 
 function updatePlayers()
-    for _,player in ipairs(game.players) do
+    for _,player in pairs(game.players) do
         updatePlayer(player)
     end
 end
@@ -202,7 +202,7 @@ end
 function reportFurnaces(forceName)
     local totEnergy = 0
     local furnaces = {}
-    local surface = game.get_surface(1)
+    local surface = game.surfaces["nauvis"]
     for xys,ent in pairs(global.furnaces) do
         local details = global.furnaceDetails[xys] or {name = ent.name}
         if (not ent.valid) and details then
@@ -257,7 +257,7 @@ end
 
 function reportBatteries(forceName)
     local totEnergy = 0
-    local surface = game.get_surface(1)
+    local surface = game.surfaces["nauvis"]
     for xys,ent in pairs(global.batteries) do
         if not ent.valid then
             ent = surface.find_entity("basic-accumulator", str2pos(xys))
@@ -274,7 +274,7 @@ function reportBuilders(forceName)
     local hasoutput = {}
     local hasinput = {}
     local crafting = {}
-    local surface = game.get_surface(1)
+    local surface = game.surfaces["nauvis"]
     for xys,ent in pairs(global.builders) do
         if not ent.valid then
             for i = 1,3 do
@@ -319,7 +319,7 @@ end
 
 
 function getPollution()
-    local surface = game.get_surface(1)
+    local surface = game.surfaces["nauvis"]
     local pollutionTotal = 0
     local chunks = 0
     forEachChunk(function(chunk_coord, area)
@@ -334,7 +334,7 @@ function getPollution()
 end
 
 function forEachChunk(f)
-    local surface = game.get_surface(1)
+    local surface = game.surfaces["nauvis"]
 
     for coord in surface.get_chunks() do
         local X,Y = coord.x, coord.y
@@ -349,7 +349,8 @@ end
 function getEntities(force, types)
     -- print("getEntities " .. serpent.line(types))
 
-    local surface = game.get_surface(1)
+    local surface = game.surfaces["nauvis"]
+
     local ents = {}
     forEachChunk(function(chunk_coord, area)
         for _,type in pairs(types) do
@@ -367,7 +368,7 @@ end
 
 function getStoredFluids(storageTanksByPos)
     local count_by_name_total = {}
-    local surface = game.get_surface(1)
+    local surface = game.surfaces["nauvis"]
 
     for xys,ent in pairs(storageTanksByPos) do
         if ent then
@@ -510,7 +511,7 @@ end
 -- debugging tools
 function debugLog(msg, force)
     if (DEV or force) and msg then
-            for i,player in ipairs(game.players) do
+            for i,player in pairs(game.players) do
                 if player and player.valid then
                     if type(msg) == "string" then
                         player.print(msg)
