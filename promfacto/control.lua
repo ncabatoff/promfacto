@@ -211,9 +211,12 @@ function reportFurnaces(forceName)
         if ent then
             totEnergy = totEnergy + ent.energy
 
-            -- local inpinv = ent.get_inventory(defines.inventory.furnace_source)
-            local outpinv = ent.get_output_inventory()
+            local inpinv = ent.get_inventory(defines.inventory.furnace_source)
+            for k,v in pairs(inpinv.get_contents()) do
+                details.product = k
+            end
 
+            local outpinv = ent.get_output_inventory()
             local gotoutp = not outpinv.is_empty()
             local maxedout
             if gotoutp then
@@ -225,7 +228,7 @@ function reportFurnaces(forceName)
                     break
                 end
             end
-            local product = details.product or "unknown"
+            local product = string.match(details.product, "[^-]+") or "unknown"
 
             local status = "idle"
             if ent.is_crafting() and not maxedout then
