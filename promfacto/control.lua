@@ -15,6 +15,7 @@ gauge_pollution_total = prometheus.gauge("factorio_pollution_total", "total poll
 gauge_evolution_factor = prometheus.gauge("factorio_evolution_factor", "evolution_factor")
 gauge_fluid_stored = prometheus.gauge("factorio_fluid_stored", "fluid stored", {"force", "resource_name"})
 gauge_energy = prometheus.gauge("factorio_energy", "energy", {"force", "entity_name"})
+gauge_fuel = prometheus.gauge("factorio_fuel", "fuel", {"force", "entity_name"})
 gauge_crafting = prometheus.gauge("factorio_crafting", "crafting", {"force", "entity_name"})
 gauge_hasoutput = prometheus.gauge("factorio_hasoutput", "has output", {"force", "entity_name"})
 gauge_hasinput = prometheus.gauge("factorio_hasinput", "has output", {"force", "entity_name"})
@@ -54,14 +55,10 @@ script.on_init(function()
     initPlayers()
 end)
 
---- on_load event
-script.on_load(function()
-    init()
-end)
-
 function init()
     global.fluidEntities = global.fluidEntities or {}
     global.furnaces = global.furnaces or {}
+    global.boilers = global.boilers or {}
     global.furnaceDetails = global.furnaceDetails or {}
     global.batteries = global.batteries or {}
     global.builders = global.builders or {}
@@ -137,6 +134,9 @@ function initPlayer(player)
     global.furnaces = getEntities(player.force, {'furnace'})
     reportFurnaces(player.force.name)
 
+    global.boilers = getEntities(player.force, {'boiler'})
+    reportBoilers(player.force.name)
+
     global.batteries = getEntities(player.force, {'accumulator'})
     reportBatteries(player.force.name)
 
@@ -174,6 +174,7 @@ function updatePlayer(player)
     getPollution()
     reportFluids(forceName)
     reportFurnaces(forceName)
+    reportBoilers(forceName)
     reportBatteries(forceName)
     reportBuilders(forceName)
 
@@ -256,6 +257,26 @@ function reportFurnaces(forceName)
             gauge_furnaces:set(n, {forceName, product, state})
         end
     end
+end
+
+function reportBoilers(forceName)
+    local totEnergy = 0
+    local surface = game.surfaces["nauvis"]
+    local coal = 0
+    for xys,ent in pairs(global.boilers) do
+        if not ent.valid then
+            ent = surface.find_entity("boiler", str2pos(xys))
+        end
+        if ent then
+            totEnergy = totEnergy + ent.energy
+            local fuelinv = ent.get_fuel_inventory()
+            for k,v in pairs(fuelinv.get_contents()) do
+                coal = coal + v
+            end
+        end
+    end
+    gauge_energy:set(totEnergy, {forceName, "boilers"})
+    gauge_fuel:set(coal, {forceName, "boilers"})
 end
 
 function reportBatteries(forceName)
@@ -400,6 +421,10 @@ function entityBuilt(event, ent)
         local xy = XY(ent.position.x, ent.position.y)
         global.furnaces[xy:tostr()] = ent
     end
+    if ent.type == "boiler" then
+        local xy = XY(ent.position.x, ent.position.y)
+        global.boilers[xy:tostr()] = ent
+    end
     if ent.type == "accumulator" then
         local xy = XY(ent.position.x, ent.position.y)
         global.batteries[xy:tostr()] = ent
@@ -425,6 +450,11 @@ function entityMined(event, ent)
     if ent.type == "furnace" then
         local xy = XY(ent.position.x, ent.position.y)
         global.furnaces[xy:tostr()] = nil
+    end
+
+    if ent.type == "boiler" then
+        local xy = XY(ent.position.x, ent.position.y)
+        global.boilers[xy:tostr()] = nil
     end
 
     if ent.type == "accumulator" then
